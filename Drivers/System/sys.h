@@ -58,11 +58,20 @@
 #define PIout(n)   BIT_ADDR(GPIOI_ODR_Addr, n)  // 输出 
 #define PIin(n)    BIT_ADDR(GPIOI_IDR_Addr, n)  // 输入
 
+#define RCC_SYSTICK_TIMER_CLK_ENABLE()  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE)    
+#define SYSTICK_TIMER                   TIM6
+#define SYSTICK_TIMER_IRQn              TIM6_DAC_IRQn
+#define SYSTICK_TIMER_IRQHandler        TIM6_DAC_IRQHandler
+
+
 void NVIC_Config(void);
+void System_Init(void);
+uint32_t SysTick_GetTick(void);
 //以下为汇编函数
 void WFI_SET(void);		//执行WFI指令
 void INTX_DISABLE(void);//关闭所有中断
 void INTX_ENABLE(void);	//开启所有中断
 void MSR_MSP(uint32_t addr);	//设置堆栈地址
 void sys_nvic_set_vector_table(uint32_t baseaddr, uint32_t offset);
+
 #endif
