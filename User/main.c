@@ -55,7 +55,7 @@ int main(void)
 	
 	KEY_Init();		/* 初始化使能按键 */
 	KEY_CreateConfigDefault(&key1_config, GPIOA, GPIO_Pin_0);	/* 创建按键1的默认配置，使用GPIOA的Pin0 */
-	key1_id = (&key1_config, key_callback, NULL);		/* 注册按键1的配置、回调函数和用户数据 */
+	key1_id = KEY_Register(&key1_config, key_callback, NULL);		/* 注册按键1的配置、回调函数和用户数据 */
 	if (key1_id < 0) {
         printf("Key 1 registration failed!\r\n");
     }
