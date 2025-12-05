@@ -49,6 +49,13 @@ typedef void (*KeyCallback)(uint8_t key_id, KeyEvent_t event);
 /* 前向声明 结构体 */
 typedef struct KeyConfig_t KeyConfig_t;
 
+typedef struct
+{
+    int id;                     /*!< 按键唯一标识符 */
+    KeyConfig_t *keyconfig;     /*!< 按键配置参数指针，指向具体的按键硬件配置 */
+} Key_Device_t;
+
+
 /* 函数声明 */
 /* 驱动管理函数 */
 bool KEY_Init(void);
