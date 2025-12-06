@@ -17,13 +17,6 @@ typedef enum
     KEY_STATE_LONG_PRESS,   /* 长按状态 */
 } KeyState_t;
 
-/* 按键电平类型 */
-typedef enum
-{
-    KEY_ACTIVE_LOW = 0, /* 低电平有效 */
-    KEY_ACTIVE_HIGH,    /* 高电平有效 */
-} KeyActiveType_t;
-
 /* 按键配置结构体 */
 typedef struct
 {
@@ -202,6 +195,43 @@ bool KEY_CreateConfigDefault(KeyConfig_t*config, GPIO_TypeDef *port, uint16_t pi
     return true;
 }
 
+/**
+ * @brief 创建按键配置结构体
+ * @param config 指向按键配置结构体的指针
+ * @param port 按键连接的GPIO端口
+ * @param pin 按键连接的GPIO引脚
+ * @param active_type 按键有效电平类型
+ * @param debounce_time 消抖时间(ms)
+ * @param long_press_time 长按判定时间(ms)
+ * @param repeat_interval 重复按键间隔时间(ms)
+ * @param enable_long_press 是否启用长按功能
+ * @param enable_double_click 是否启用双击功能
+ * @param enable_repeat 是否启用重复按键功能
+ * @retval bool 配置成功返回true，失败返回false
+ */
+bool KEY_CreateConfig(KeyConfig_t*config, GPIO_TypeDef *port, uint16_t pin, KeyActiveType_t active_type, uint16_t debounce_time, uint16_t long_press_time,uint16_t repeat_interval, bool enable_long_press, bool enable_double_click, bool enable_repeat)
+{
+    // 检查配置指针是否为空
+    if(config == NULL)
+        return false;
+    
+    // 初始化默认配置参数
+    KeyConfig_t my_config = {
+        .port = port,
+        .pin = pin,
+        .active_type = active_type,
+        .debounce_time = debounce_time,
+        .long_press_time = long_press_time,
+        .repeat_interval = repeat_interval,
+        .enable_long_press = enable_long_press,
+        .enable_double_click = enable_double_click,
+        .enable_repeat = enable_repeat,
+    };
+    
+    // 将默认配置复制到目标配置结构体
+    *config = my_config;
+    return true;
+}
 
 /* 按键任务处理 */
 bool KEY_Task(void)
@@ -360,8 +390,7 @@ static void key_trigger_event(KeyHandle_t *key, KeyEvent_t event)
 {
     if (key->callback != NULL)
     {
-        uint8_t key_id = (uint8_t)(key - key_driver.keys);
-        key->callback(key_id, event);
+        key->callback(event,key->user_data);
     }
 }
 

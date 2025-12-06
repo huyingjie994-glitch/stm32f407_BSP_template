@@ -43,15 +43,22 @@ typedef enum {
     KEY_EVENT_REPEAT,            /* 连按 */
 } KeyEvent_t;
 
+/* 按键电平类型 */
+typedef enum
+{
+    KEY_ACTIVE_LOW = 0, /* 低电平有效 */
+    KEY_ACTIVE_HIGH,    /* 高电平有效 */
+} KeyActiveType_t;
+
 /* 按键回调函数类型 */
-typedef void (*KeyCallback)(uint8_t key_id, KeyEvent_t event);
+typedef void (*KeyCallback)(KeyEvent_t event, void *user_data);
 
 /* 前向声明 结构体 */
 typedef struct KeyConfig_t KeyConfig_t;
 
 typedef struct
 {
-    int id;                     /*!< 按键唯一标识符 */
+    int8_t id;                     /*!< 按键唯一标识符 */
     KeyConfig_t *keyconfig;     /*!< 按键配置参数指针，指向具体的按键硬件配置 */
 } Key_Device_t;
 
@@ -64,6 +71,7 @@ bool KEY_Task(void);
 
 /* 按键注册/注销函数 */
 int8_t KEY_Register(const KeyConfig_t *config, KeyCallback callback, void *user_data);
+bool KEY_CreateConfig(KeyConfig_t*config, GPIO_TypeDef *port, uint16_t pin, KeyActiveType_t active_type, uint16_t debounce_time, uint16_t long_press_time,uint16_t repeat_interval, bool enable_long_press, bool enable_double_click, bool enable_repeat);
 bool KEY_Unregister(uint8_t key_id);
 
 /* 按键配置函数 */
